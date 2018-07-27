@@ -8,7 +8,7 @@ Background
 
 Food delivery businesses such as GrubHub and UberEATS need a method to keep hot and cold food at a consistent temperature when it is en route to customers. Other businesses such as Blue Apron deliver fresh food to houses which can be left outside for hours or even overnight. Fresh vegetables such as kale and arugula are easily perishable. Currently, businesses often use ice packs with foam liners to keep food cold but this is an extremely labor intensive process that is inefficient and costly. 
 
-Here's why:
+<b>Here's why:</b>
 
 A staff member has to unpack several tons of ice packs, load them into hundreds of delivery bag, and then reload those melted ice packs back onto massive racks that take up an enormous amount of freezer space. Another downside is the environmental impact. These ice packs, in aggregate, weigh several tons, which cause delivery cars to expend more gasoline and emit more CO2 emissions. Furthermore, gel-based ice packs and foam liners are not recyclable and ultimately end up in landfills or the ocean. 
 
@@ -26,7 +26,6 @@ Globally, the most revenue is generated in China with over $41 billion.
 * Revenue is expected to show an annual growth rate of 9.7%
 * Sources: https://www.statista.com/outlook/374/109/online-food-delivery/united-states
   https://www.moneyunder30.com/meal-delivery-comparison
-
 
 Description
 -------------
