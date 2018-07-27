@@ -24,8 +24,10 @@ Food Delivery Stats in 2018:
 Globally, the most revenue is generated in China with over $41 billion.
 * The market's largest segment is Restaurant-to-Consumer Delivery with a market volume of $18 billion in 2018.
 * Revenue is expected to show an annual growth rate of 9.7%
+* Food losses and waste amounts to over $680 billion in industrialized countries and $310 billion in developing countries
 * Sources: https://www.statista.com/outlook/374/109/online-food-delivery/united-states
   https://www.moneyunder30.com/meal-delivery-comparison
+  http://www.fao.org/save-food/resources/keyfindings/en/
 
 
 Description
