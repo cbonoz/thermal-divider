@@ -42,3 +42,10 @@ How we built it
 
 Advantages
 -------------------------
+
+Screenshots
+--------------------
+
+<p align="center">
+    <img src="screenshots/splitter.jpg" width="400"/>
+</p>
