@@ -1,4 +1,4 @@
-package com.example.android.bluetoothlegatt
+package com.example.android.bluetoothlegatt.activities
 
 import android.Manifest
 import android.app.Activity
@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.android.bluetoothlegatt.R
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -50,7 +51,7 @@ class DeviceScanActivity : Activity(), BluetoothAdapter.LeScanCallback {
         // selectively disable BLE-related features.
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
-            finish()
+            return
         }
 
         // Prompt for permissions
@@ -98,13 +99,15 @@ class DeviceScanActivity : Activity(), BluetoothAdapter.LeScanCallback {
 
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter!!.isEnabled) {
+        if (mBluetoothAdapter != null) {
             if (!mBluetoothAdapter!!.isEnabled) {
-                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                if (!mBluetoothAdapter!!.isEnabled) {
+                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                }
             }
+            scanLeDevice(true)
         }
-        scanLeDevice(true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

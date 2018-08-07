@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.bluetoothlegatt
+package com.example.android.bluetoothlegatt.activities
 
 import android.app.Activity
 import android.bluetooth.BluetoothGattCharacteristic
@@ -31,10 +31,12 @@ import android.os.IBinder
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.android.bluetoothlegatt.BluetoothLeService
+import com.example.android.bluetoothlegatt.R
+import com.example.android.bluetoothlegatt.SampleGattAttributes
 
 import java.util.ArrayList
 import java.util.HashMap
