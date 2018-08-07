@@ -1,5 +1,10 @@
+<p align="center">
+    <img src="screenshots/thermal_divider.png" width="300"/>
+</p>
+
+
 Thermal Divider Mobile App
-====================
+---
 
 https://www.hackster.io/46508/thermal-divider-5fa8e6
 
