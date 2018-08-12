@@ -34,6 +34,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.example.android.bluetoothlegatt.BluetoothLeService
 import com.example.android.bluetoothlegatt.R
 import com.example.android.bluetoothlegatt.SampleGattAttributes
@@ -171,12 +172,15 @@ class DeviceControlActivity : Activity() {
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
         if (mBluetoothLeService != null) {
             val result = mBluetoothLeService!!.connect(mDeviceAddress)
-            Log.d(TAG, "Connect request result=$result")
+            Timber.d("Connect request result=$result")
         }
     }
 
     override fun onPause() {
         super.onPause()
+        if (alertDialog != null && alertDialog!!.isShowing) {
+            alertDialog!!.dismiss()
+        }
         unregisterReceiver(mGattUpdateReceiver)
         handler.removeCallbacksAndMessages(null)
     }
@@ -188,7 +192,7 @@ class DeviceControlActivity : Activity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.gatt_services, menu)
+        menuInflater.inflate(R.menu.menu_control, menu)
         if (mConnected) {
             menu.findItem(R.id.menu_connect).isVisible = false
             menu.findItem(R.id.menu_disconnect).isVisible = true
@@ -196,6 +200,7 @@ class DeviceControlActivity : Activity() {
             menu.findItem(R.id.menu_connect).isVisible = true
             menu.findItem(R.id.menu_disconnect).isVisible = false
         }
+        menu.findItem(R.id.menu_alerts).isVisible = true
         return true
     }
 
@@ -209,12 +214,30 @@ class DeviceControlActivity : Activity() {
                 mBluetoothLeService!!.disconnect()
                 return true
             }
+            R.id.menu_alerts -> {
+                showAlertDialog()
+            }
             android.R.id.home -> {
                 onBackPressed()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private var alertDialog: MaterialDialog? = null
+
+    private fun showAlertDialog() {
+        alertDialog = MaterialDialog.Builder(this)
+                .title("Configure Alerts")
+                .items("Alert if temperature changes from target by 10%", "Alert if battery below 15%", "Alert if sensors disconnect")
+                .itemsCallbackMultiChoice(null) { dialog, which, text ->
+                    // TODO: replace with real notificaitons post demo
+                    text.map { item -> Timber.d("Selected alert: $item") }
+                    true
+                }
+                .positiveText(R.string.activate)
+                .show();
     }
 
     private fun updateConnectionState(resourceId: Int) {
@@ -312,8 +335,6 @@ class DeviceControlActivity : Activity() {
     }
 
     companion object {
-        private val TAG = DeviceControlActivity::class.java.getSimpleName()
-
         val EXTRAS_DEVICE_NAME = "THERMAL_DIVIDER_DEVICE_NAME"
         val EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS"
 

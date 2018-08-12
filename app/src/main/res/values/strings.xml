@@ -31,4 +31,5 @@
     <string name="inactive">Inactive</string>
     <string name="active">Active</string>
     <string name="slogan">Temperature Controlled Transport</string>
+    <string name="menu_alerts">Alerts</string>
 </resources>

@@ -80,7 +80,7 @@ class DeviceDiscoverActivity : Activity(), BluetoothAdapter.LeScanCallback {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.menu_discover, menu)
         if (!mScanning) {
             menu.findItem(R.id.menu_stop).isVisible = false
             menu.findItem(R.id.menu_scan).isVisible = true
