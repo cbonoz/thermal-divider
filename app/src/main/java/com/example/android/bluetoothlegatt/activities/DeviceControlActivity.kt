@@ -36,8 +36,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.android.bluetoothlegatt.BluetoothLeService
+import com.example.android.bluetoothlegatt.LineChartView
 import com.example.android.bluetoothlegatt.R
 import com.example.android.bluetoothlegatt.SampleGattAttributes
+import com.example.android.bluetoothlegatt.models.TempRecord
+import kotlinx.android.synthetic.main.activity_device_control.*
 import timber.log.Timber
 
 import java.util.ArrayList
@@ -50,6 +53,10 @@ import java.util.HashMap
  * Bluetooth LE API.
  */
 class DeviceControlActivity : Activity() {
+
+
+    private val coldValues = ArrayList<TempRecord>()
+    private val hotValues = ArrayList<TempRecord>()
 
     private lateinit var mConnectionState: TextView
     private lateinit var mDataField: TextView
@@ -118,6 +125,8 @@ class DeviceControlActivity : Activity() {
 
     private fun clearUI() {}
 
+    private lateinit var tempChart: LineChartView
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_control)
@@ -132,6 +141,7 @@ class DeviceControlActivity : Activity() {
         mHotTemperature = findViewById<TextView>(R.id.hot_temperature)
         mDataField = findViewById<TextView>(R.id.data_value)
         mActivate = findViewById<Button>(R.id.activate)
+        tempChart = findViewById<LineChartView>(R.id.lineChartView)
         mOverlay = findViewById<ImageView>(R.id.lunchbox_overlay)
         mOverlay.imageAlpha = 0
         mActivate.setOnClickListener {
@@ -249,13 +259,18 @@ class DeviceControlActivity : Activity() {
             val currentRead = Integer.parseInt(data.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0])
             if (currentRead in 0..255) {
                 val difference = Math.abs(currentRead - lastRead)
+                val timestamp = System.currentTimeMillis()
                 val tempString = String.format("%d", currentRead)
                 if (lastRead > currentRead) {
                     mOverlay.imageAlpha = difference
                     mColdTemperature.text = tempString
+                    coldValues.add(TempRecord(timestamp, currentRead))
                 } else {
                     mHotTemperature.text = tempString
+                    hotValues.add(TempRecord(timestamp, currentRead))
                 }
+
+                tempChart.setData(coldValues, hotValues)
                 lastRead = currentRead
             }
         }

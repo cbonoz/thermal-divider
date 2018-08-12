@@ -64,6 +64,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/_0"
                 android:textSize="30sp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -132,16 +133,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/activate" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/chartLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
 
         </LinearLayout>
+
+        <com.example.android.bluetoothlegatt.LineChartView
+            android:id="@+id/lineChartView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </ScrollView>
