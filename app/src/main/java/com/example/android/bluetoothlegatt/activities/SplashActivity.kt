@@ -1,7 +1,6 @@
 package com.example.android.bluetoothlegatt.activities
 
 import android.content.Intent
-import com.daimajia.androidanimations.library.BuildConfig
 
 import com.daimajia.androidanimations.library.Techniques
 import com.example.android.bluetoothlegatt.R
@@ -51,7 +50,7 @@ class SplashActivity : AwesomeSplash() {
     }
 
     private fun proceed() {
-        val intent = Intent(this, DeviceScanActivity::class.java)
+        val intent = Intent(this, DeviceDiscoverActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()

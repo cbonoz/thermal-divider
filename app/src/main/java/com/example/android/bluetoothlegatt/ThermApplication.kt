@@ -14,6 +14,5 @@ class ThermApplication : Application() {
 
     companion object {
         var app: ThermApplication? = null
-
     }
 }

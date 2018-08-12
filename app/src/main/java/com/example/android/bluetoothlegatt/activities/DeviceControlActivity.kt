@@ -37,6 +37,7 @@ import android.widget.TextView
 import com.example.android.bluetoothlegatt.BluetoothLeService
 import com.example.android.bluetoothlegatt.R
 import com.example.android.bluetoothlegatt.SampleGattAttributes
+import timber.log.Timber
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -49,12 +50,13 @@ import java.util.HashMap
  */
 class DeviceControlActivity : Activity() {
 
-    private var mConnectionState: TextView? = null
-    private var mDataField: TextView? = null
-    private var mColdTemperature: TextView? = null
-    private var mHotTemperature: TextView? = null
-    private var mActivate: Button? = null
-    private var mOverlay: ImageView? = null
+    private lateinit var mConnectionState: TextView
+    private lateinit var mDataField: TextView
+    private lateinit var mColdTemperature: TextView
+    private lateinit var mHotTemperature: TextView
+    private lateinit var mActivate: Button
+    private lateinit var mOverlay: ImageView
+
     private var mDeviceAddress: String? = null
     private var mBluetoothLeService: BluetoothLeService? = null
     private var mGattCharacteristics = ArrayList<ArrayList<BluetoothGattCharacteristic>>()
@@ -74,7 +76,7 @@ class DeviceControlActivity : Activity() {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             mBluetoothLeService = (service as BluetoothLeService.LocalBinder).service
             if (!mBluetoothLeService!!.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth")
+                Timber.e("Unable to initialize Bluetooth")
                 finish()
             }
             // Automatically connects to the device upon successful start-up initialization.
@@ -108,7 +110,7 @@ class DeviceControlActivity : Activity() {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService!!.supportedGattServices)
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE == action) {
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
+                displayTemperatureData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
             }
         }
     }
@@ -117,21 +119,21 @@ class DeviceControlActivity : Activity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.gatt_services_characteristics)
+        setContentView(R.layout.activity_device_control)
 
         val intent = intent
         val mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME)
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS)
 
         // Sets up UI references.
-        mConnectionState = findViewById(R.id.connection_state) as TextView
-        mColdTemperature = findViewById(R.id.cold_temperature) as TextView
-        mHotTemperature = findViewById(R.id.hot_temperature) as TextView
-        mDataField = findViewById(R.id.data_value) as TextView
-        mActivate = findViewById(R.id.acivate) as Button
-        mOverlay = findViewById(R.id.lunchbox_overlay) as ImageView
-        mOverlay!!.imageAlpha = 0
-        mActivate!!.setOnClickListener {
+        mConnectionState = findViewById<TextView>(R.id.connection_state)
+        mColdTemperature = findViewById<TextView>(R.id.cold_temperature)
+        mHotTemperature = findViewById<TextView>(R.id.hot_temperature)
+        mDataField = findViewById<TextView>(R.id.data_value)
+        mActivate = findViewById<Button>(R.id.activate)
+        mOverlay = findViewById<ImageView>(R.id.lunchbox_overlay)
+        mOverlay.imageAlpha = 0
+        mActivate.setOnClickListener {
             if (mBluetoothLeService != null) {
                 if (mOnOffCharacteristic != null) {
                     val value = ByteArray(1)
@@ -143,12 +145,12 @@ class DeviceControlActivity : Activity() {
                     mOnOffCharacteristic!!.value = value
                     if (mBluetoothLeService!!.writeCharacteristic()) {
                         if (mActive) {
-                            mActivate!!.setText(R.string.activate)
-                            mDataField!!.setText(R.string.inactive)
+                            mActivate.setText(R.string.activate)
+                            mDataField.setText(R.string.inactive)
                             mActive = false
                         } else {
-                            mActivate!!.setText(R.string.deactivate)
-                            mDataField!!.setText(R.string.active)
+                            mActivate.setText(R.string.deactivate)
+                            mDataField.setText(R.string.active)
                             mActive = true
                         }
                     }
@@ -216,19 +218,20 @@ class DeviceControlActivity : Activity() {
     }
 
     private fun updateConnectionState(resourceId: Int) {
-        runOnUiThread { mConnectionState!!.setText(resourceId) }
+        runOnUiThread { mConnectionState.setText(resourceId) }
     }
 
-    private fun displayData(data: String?) {
+    private fun displayTemperatureData(data: String?) {
         if (data != null) {
-            val currentRead = Integer.parseInt(data.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0])
-            if (currentRead >= 0 && currentRead < 256) {
+            val currentRead = Integer.parseInt(data.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0])
+            if (currentRead in 0..255) {
                 val difference = Math.abs(currentRead - lastRead)
+                val tempString = String.format("%d", currentRead)
                 if (lastRead > currentRead) {
-                    mOverlay!!.imageAlpha = difference
-                    mColdTemperature!!.text = Integer.toString(currentRead)
+                    mOverlay.imageAlpha = difference
+                    mColdTemperature.text = tempString
                 } else {
-                    mHotTemperature!!.text = Integer.toString(currentRead)
+                    mHotTemperature.text = tempString
                 }
                 lastRead = currentRead
             }
@@ -311,7 +314,7 @@ class DeviceControlActivity : Activity() {
     companion object {
         private val TAG = DeviceControlActivity::class.java.getSimpleName()
 
-        val EXTRAS_DEVICE_NAME = "DEVICE_NAME"
+        val EXTRAS_DEVICE_NAME = "THERMAL_DIVIDER_DEVICE_NAME"
         val EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS"
 
         private fun makeGattUpdateIntentFilter(): IntentFilter {

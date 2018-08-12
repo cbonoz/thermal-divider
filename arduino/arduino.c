@@ -1,5 +1,5 @@
 
-nclude <CurieBLE.h>
+#include <CurieBLE.h>
 int a;
 int c;
 float temperature1;          //temperature sensor on A0 

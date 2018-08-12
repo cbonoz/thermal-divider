@@ -16,35 +16,43 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.example.android.bluetoothlegatt.R
+import timber.log.Timber
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
+ * Once the thermal divider device is found continue to the control activity.
  */
-class DeviceScanActivity : Activity(), BluetoothAdapter.LeScanCallback {
-    override fun onLeScan(device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray?) {
-        if (device != null && device.name != null && device.name == DEVICE_NAME) {
-            val intent = Intent(applicationContext, DeviceControlActivity::class.java)
-            intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.name)
-            intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.address)
-            if (mScanning) {
-                mBluetoothAdapter!!.stopLeScan(this)
-                mScanning = false
-            }
-            startActivity(intent)
-        }
-    }
+class DeviceDiscoverActivity : Activity(), BluetoothAdapter.LeScanCallback {
 
     private var mBluetoothAdapter: BluetoothAdapter? = null
     private var mScanning: Boolean = false
     private var mHandler: Handler? = null
 
+    override fun onLeScan(device: BluetoothDevice?, rssi: Int, scanRecord: ByteArray?) {
+        if (device != null) {
+            if (device.name != null && device.name == THERMAL_DIVIDER_DEVICE_NAME) {
+                // We have found a valid device.
+                val intent = Intent(applicationContext, DeviceControlActivity::class.java)
+                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.name)
+                intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.address)
+                if (mScanning) {
+                    mBluetoothAdapter!!.stopLeScan(this)
+                    mScanning = false
+                }
+                Toast.makeText(this, "Connected: Started Monitoring", Toast.LENGTH_SHORT).show()
+                startActivity(intent)
+            } else {
+                Timber.d("Detected nonmatching BLE device: %s", device.name)
+            }
+        }
+    }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (actionBar != null) {
             actionBar!!.setTitle(R.string.title_devices)
         }
-        setContentView(R.layout.device_scan)
+        setContentView(R.layout.activity_device_discover)
         mHandler = Handler()
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -144,12 +152,12 @@ class DeviceScanActivity : Activity(), BluetoothAdapter.LeScanCallback {
 
     companion object {
 
-        private val REQUEST_ENABLE_BT = 1
+        private const val REQUEST_ENABLE_BT = 1
         // Stops scanning after 10 seconds.
-        private val SCAN_PERIOD: Long = 10000
+        private const val SCAN_PERIOD: Long = 10000
 
-        private val PERMISSION_RESPONSE = 42
+        private const val PERMISSION_RESPONSE = 42
 
-        val DEVICE_NAME = "LUNCHBOX"
+        const val THERMAL_DIVIDER_DEVICE_NAME = "LUNCHBOX"
     }
 }

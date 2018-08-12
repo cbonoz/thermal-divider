@@ -29,7 +29,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
+import timber.log.Timber
 import java.util.UUID
 
 /**
@@ -53,14 +53,14 @@ class BluetoothLeService : Service() {
                 intentAction = ACTION_GATT_CONNECTED
                 mConnectionState = STATE_CONNECTED
                 broadcastUpdate(intentAction)
-                Log.i(TAG, "Connected to GATT server.")
+                Timber.i("Connected to GATT server.")
                 // Attempts to discover services after successful connection.
-                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt!!.discoverServices())
+                Timber.i("Attempting to start service discovery:%s", mBluetoothGatt!!.discoverServices())
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED
                 mConnectionState = STATE_DISCONNECTED
-                Log.i(TAG, "Disconnected from GATT server.")
+                Timber.i("Disconnected from GATT server.")
                 broadcastUpdate(intentAction)
             }
         }
@@ -69,7 +69,7 @@ class BluetoothLeService : Service() {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
             } else {
-                Log.w(TAG, "onServicesDiscovered received: $status")
+                Timber.w("onServicesDiscovered received: $status")
             }
         }
 
@@ -110,7 +110,7 @@ class BluetoothLeService : Service() {
         if (UUID_DEVICE_ON_OFF == characteristic.uuid) {
             val flag = characteristic.properties
             val format = -1
-            Log.d(TAG, "Characteristic property " + characteristic.getStringValue(0))
+            Timber.d("Characteristic property %s", characteristic.getStringValue(0))
         } else {
             // For all other profiles, writes the data formatted in HEX.
             val data = characteristic.value
@@ -152,14 +152,14 @@ class BluetoothLeService : Service() {
         if (mBluetoothManager == null) {
             mBluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
             if (mBluetoothManager == null) {
-                Log.e(TAG, "Unable to initialize BluetoothManager.")
+                Timber.e("Unable to initialize BluetoothManager.")
                 return false
             }
         }
 
         mBluetoothAdapter = mBluetoothManager!!.adapter
         if (mBluetoothAdapter == null) {
-            Log.e(TAG, "Unable to obtain a BluetoothAdapter.")
+            Timber.e("Unable to obtain a BluetoothAdapter.")
             return false
         }
 
@@ -178,14 +178,14 @@ class BluetoothLeService : Service() {
      */
     fun connect(address: String?): Boolean {
         if (mBluetoothAdapter == null || address == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.")
+            Timber.w("BluetoothAdapter not initialized or unspecified address.")
             return false
         }
 
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address == mBluetoothDeviceAddress
                 && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.")
+            Timber.d("Trying to use an existing mBluetoothGatt for connection.")
             if (mBluetoothGatt!!.connect()) {
                 mConnectionState = STATE_CONNECTING
                 return true
@@ -196,13 +196,13 @@ class BluetoothLeService : Service() {
 
         val device = mBluetoothAdapter!!.getRemoteDevice(address)
         if (device == null) {
-            Log.w(TAG, "Device not found.  Unable to connect.")
+            Timber.w(TAG, "Device not found.  Unable to connect.")
             return false
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback)
-        Log.d(TAG, "Trying to create a new connection.")
+        Timber.d("Trying to create a new connection.")
         mBluetoothDeviceAddress = address
         mConnectionState = STATE_CONNECTING
         return true
@@ -216,7 +216,7 @@ class BluetoothLeService : Service() {
      */
     fun disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized")
+            Timber.w("BluetoothAdapter not initialized")
             return
         }
         mBluetoothGatt!!.disconnect()
@@ -243,7 +243,7 @@ class BluetoothLeService : Service() {
      */
     fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized")
+            Timber.w("BluetoothAdapter not initialized")
             return
         }
         mBluetoothGatt!!.readCharacteristic(characteristic)
@@ -270,7 +270,7 @@ class BluetoothLeService : Service() {
     }
 
     companion object {
-        private val TAG = BluetoothLeService::class.java!!.getSimpleName()
+        private val TAG = BluetoothLeService::class.java.getSimpleName()
 
         private val STATE_DISCONNECTED = 0
         private val STATE_CONNECTING = 1
