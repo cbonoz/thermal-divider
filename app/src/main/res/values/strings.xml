@@ -32,4 +32,6 @@
     <string name="active">Active</string>
     <string name="slogan">Temperature Controlled Transport</string>
     <string name="menu_alerts">Alerts</string>
+    <string name="bluetooth_required">Bluetooth required for app</string>
+    <string name="searching_text">Searching for Device...</string>
 </resources>

@@ -24,8 +24,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.DeviceControlActivity"/>
-        <activity android:name=".activities.DeviceDiscoverActivity" />
+        <activity android:name=".activities.DeviceControlActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
+        <activity android:name=".activities.DeviceDiscoverActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
 
         <service android:name=".BluetoothLeService" android:enabled="true"/>
     </application>
