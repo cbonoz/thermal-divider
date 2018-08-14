@@ -13,7 +13,7 @@ function SystemInformationService() {
     characteristics: [
       new TempOneCharacteristic(),
       new TempTwoCharacteristic(),
-      new SwitchCharacteristic(),
+      new SwitchCharacteristic()
       // new LedCharacteristic()
     ]
   });
