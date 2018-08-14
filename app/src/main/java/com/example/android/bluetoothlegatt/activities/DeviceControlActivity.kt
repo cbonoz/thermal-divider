@@ -16,7 +16,6 @@
 
 package com.example.android.bluetoothlegatt.activities
 
-import android.app.Activity
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import android.content.BroadcastReceiver
@@ -28,19 +27,20 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.android.bluetoothlegatt.BluetoothLeService
 import com.example.android.bluetoothlegatt.LineChartView
 import com.example.android.bluetoothlegatt.R
 import com.example.android.bluetoothlegatt.SampleGattAttributes
 import com.example.android.bluetoothlegatt.models.TempRecord
-import kotlinx.android.synthetic.main.activity_device_control.*
 import timber.log.Timber
 
 import java.util.ArrayList
@@ -52,7 +52,7 @@ import java.util.HashMap
  * communicates with `BluetoothLeService`, which in turn interacts with the
  * Bluetooth LE API.
  */
-class DeviceControlActivity : Activity() {
+class DeviceControlActivity : AppCompatActivity() {
 
 
     private val coldValues = ArrayList<TempRecord>()
@@ -129,6 +129,7 @@ class DeviceControlActivity : Activity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_device_control)
 
         val intent = intent
@@ -170,9 +171,9 @@ class DeviceControlActivity : Activity() {
         }
 
         if (actionBar != null) {
-            actionBar!!.setTitle(R.string.reconnect)
+            actionBar.setTitle(R.string.reconnect)
+            actionBar.setDisplayHomeAsUpEnabled(true)
         }
-        actionBar!!.setDisplayHomeAsUpEnabled(true)
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -247,6 +248,9 @@ class DeviceControlActivity : Activity() {
                     true
                 }
                 .positiveText(R.string.activate)
+                .onPositive { dialog, which ->
+                    Toast.makeText(this@DeviceControlActivity, "Updated Alerts", Toast.LENGTH_SHORT).show()
+                }
                 .show();
     }
 

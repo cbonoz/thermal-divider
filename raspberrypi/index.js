@@ -17,6 +17,11 @@ bleno.on('stateChange', function(state) {
   }
 });
 
+rpio.open(constants.COLD_PIN, rpio.INPUT);
+rpio.open(constants.HOT_PIN, rpio.INPUT)
+rpio.open(constants.LED_PIN, rpio.INPUT, rpio.OUTPUT);
+rpio.open(constants.RELAY_PIN, rpio.INPUT, rpio.OUTPUT);
+
 bleno.on('advertisingStart', function(error) {
 
   console.log('on -> advertisingStart: ' +
@@ -24,7 +29,6 @@ bleno.on('advertisingStart', function(error) {
   );
 
   if (!error) {
-
     rpio.write(constants.RELAY_PIN, rpio.LOW);
     rpio.write(constants.LED_PIN, rpio.LOW);
 

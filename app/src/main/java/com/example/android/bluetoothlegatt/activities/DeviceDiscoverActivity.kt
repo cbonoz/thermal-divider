@@ -12,9 +12,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.android.bluetoothlegatt.R
@@ -24,7 +26,7 @@ import timber.log.Timber
  * Activity for scanning and displaying available Bluetooth LE devices.
  * Once the thermal divider device is found continue to the control activity.
  */
-class DeviceDiscoverActivity : Activity(), BluetoothAdapter.LeScanCallback {
+class DeviceDiscoverActivity : AppCompatActivity(), BluetoothAdapter.LeScanCallback {
 
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private var mScanning: Boolean = false
@@ -52,10 +54,11 @@ class DeviceDiscoverActivity : Activity(), BluetoothAdapter.LeScanCallback {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        setContentView(R.layout.activity_device_discover)
         if (actionBar != null) {
             actionBar!!.setTitle(R.string.title_devices)
         }
-        setContentView(R.layout.activity_device_discover)
 
         loadingLayout = findViewById(R.id.loadingLayout)
 

@@ -2,9 +2,9 @@
 
 <resources>
     <string name="ble_not_supported">BLE is not supported. Unable to use app.</string>
-    <string name="label_data">Thermal Divider State:</string>
+    <string name="label_data">Heating State:</string>
     <string name="label_device_address">Device address:</string>
-    <string name="label_state">Connection Status:</string>
+    <string name="label_state">Status:</string>
     <string name="no_data">No data</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>

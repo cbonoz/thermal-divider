@@ -7,6 +7,7 @@
 
 # custom
 raspberry/
+raspberrypi/*.gz
 
 # Java class files
 *.class
