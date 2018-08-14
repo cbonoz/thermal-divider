@@ -1,6 +1,7 @@
 var bleno = require('bleno');
 var os = require('os');
 var util = require('util');
+var rpio = require('rpio');
 
 var BlenoCharacteristic = bleno.Characteristic;
 
@@ -9,25 +10,37 @@ const constants = require('../constants')
 var SwitchCharacteristic = function() {
  SwitchCharacteristic.super_.call(this, {
     uuid: constants.SWITCH_UUID,
-    properties: ['read'],
+    properties: ['write', 'read'],
   });
 
  this._value = new Buffer(0);
 };
 
+SwitchCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback) {
+  this._value = data;
+  const val = this._value.toString('hex')
+  console.log('SwitchCharacteristic - onWriteRequest: value = ' + val);
+
+  if (this._updateValueCallback) {
+    console.log('SwitchCharacteristic - onWriteRequest: notifying');
+    const newVal = (parseInt(val) == 1) ? rpio.HIGH : rpio.LOW;
+    rpio.write(constants.RELAY_PIN, newVal);
+    rpio.write(constants.LED_PIN, newVal);
+
+    this._updateValueCallback(this._value);
+  }
+
+  callback(this.RESULT_SUCCESS);
+};
+
 SwitchCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
   if(!offset) {
-
-    var loadAverage = os.loadavg().map(function(currentValue, index, array){
-
-      return currentValue.toFixed(3);
-    });
+    const val = rpio.write(constants.RELAY_PIN);
+    console.log('read switch', val);
 
     this._value = new Buffer(JSON.stringify({
-      'oneMin' : loadAverage[0],
-      'fiveMin': loadAverage[1],
-      'fifteenMin': loadAverage[2]
+      'status': val
     }));
   }
 

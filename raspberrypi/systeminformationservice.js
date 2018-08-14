@@ -4,7 +4,7 @@ var util = require('util');
 var TempOneCharacteristic = require('./characteristics/tempOne');
 var TempTwoCharacteristic = require('./characteristics/tempTwo');
 var SwitchCharacteristic = require('./characteristics/switch');
-var LedCharacteristic = require('./characteristics/led');
+// var LedCharacteristic = require('./characteristics/led');
 
 function SystemInformationService() {
 
@@ -14,7 +14,7 @@ function SystemInformationService() {
       new TempOneCharacteristic(),
       new TempTwoCharacteristic(),
       new SwitchCharacteristic(),
-      new LedCharacteristic()
+      // new LedCharacteristic()
     ]
   });
 };
