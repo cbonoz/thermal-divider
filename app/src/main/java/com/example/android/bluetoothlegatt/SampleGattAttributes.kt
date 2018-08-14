@@ -7,10 +7,11 @@ import java.util.HashMap
  */
 object SampleGattAttributes {
     private val attributes = HashMap<String, String>()
-    var LUNCHBOX_SERVICE = "19b10000-e8f2-537e-4f6c-d104768a1214"
-    var DEVICE_ON_OFF = "19b10001-e8f2-537e-4f6c-d104768a1214"
-    var TEMPERATURE_SENSOR_1 = "19b10000-e8f2-537e-4f6c-d104768a1217"
-    var TEMPERATURE_SENSOR_2 = "19b10000-e8f2-537e-4f6c-d104768a1218"
+
+    const val LUNCHBOX_SERVICE = "19b10000-e8f2-537e-4f6c-d104768a1214"
+    const val DEVICE_ON_OFF = "19b10001-e8f2-537e-4f6c-d104768a1214"
+    const val TEMPERATURE_SENSOR_1 = "19b10000-e8f2-537e-4f6c-d104768a1217"
+    const val TEMPERATURE_SENSOR_2 = "19b10000-e8f2-537e-4f6c-d104768a1218"
 
     fun lookup(uuid: String, defaultName: String): String {
         val name = attributes.get(uuid)

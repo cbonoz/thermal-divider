@@ -108,10 +108,10 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
     }
 
     // https://github.com/PhilJay/MPAndroidChart/blob/master/MPChartExample/src/com/xxmassdeveloper/mpchartexample/LineChartTime.java
-    fun setData(rawColdValues: List<TempRecord>, rawHotValues: List<TempRecord>) {
+    fun setData(sortedCold: List<TempRecord>, sortedHot: List<TempRecord>) {
 
-        val sortedCold = rawColdValues.sortedBy { it.timestamp }
-        val sortedHot = rawHotValues.sortedBy { it.timestamp }
+//        val sortedCold = rawColdValues.sortedBy { it.timestamp }
+//        val sortedHot = rawHotValues.sortedBy { it.timestamp }
 
         val minTimestamp: Long
         if (sortedCold.isEmpty() && sortedHot.isEmpty()) {
@@ -136,13 +136,14 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             // create a dataset and give it a type
             val set1 = LineDataSet(coldValues, "Cold Values")
             set1.axisDependency = AxisDependency.LEFT
-            set1.color = ColorTemplate.PASTEL_COLORS[0]
-            set1.valueTextColor = ColorTemplate.PASTEL_COLORS[0]
+            val color1 = ColorTemplate.PASTEL_COLORS[0]
+            set1.color = color1
+            set1.valueTextColor = color1
             set1.lineWidth = 1.5f
             set1.setDrawCircles(false)
             set1.setDrawValues(false)
             set1.fillAlpha = 65
-            set1.fillColor = ColorTemplate.getHoloBlue()
+            set1.fillColor = color1
             set1.highLightColor = Color.rgb(244, 117, 117)
             set1.setDrawCircleHole(false)
             sets.add(set1)
@@ -157,13 +158,14 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             // create a dataset and give it a type
             val set2 = LineDataSet(hotValues, "Hot Values")
             set2.axisDependency = AxisDependency.LEFT
-            set2.color = ColorTemplate.PASTEL_COLORS[2]
-            set2.valueTextColor = ColorTemplate.PASTEL_COLORS[2]
+            val color2 = ColorTemplate.PASTEL_COLORS[1]
+            set2.color = color2
+            set2.valueTextColor = color2
             set2.lineWidth = 2.5f
             set2.setDrawCircles(false)
             set2.setDrawValues(false)
             set2.fillAlpha = 65
-            set2.fillColor = ColorTemplate.getHoloBlue()
+            set2.fillColor = color2
             set2.highLightColor = Color.rgb(244, 227, 227)
             set2.setDrawCircleHole(false)
             sets.add(set2)

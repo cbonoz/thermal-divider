@@ -1,0 +1,21 @@
+{
+  "name": "raspberrypi",
+  "version": "1.0.0",
+  "description": "raspberry pi bluetooth interface for the thermal divider app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "raspberrypi",
+    "bluetooth",
+    "thermal",
+    "divider",
+    "app"
+  ],
+  "author": "Chris Buonocore",
+  "license": "MIT",
+  "dependencies": {
+    "bleno": "^0.5.0"
+  }
+}

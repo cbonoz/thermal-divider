@@ -5,6 +5,9 @@
 # Files for the ART/Dalvik VM
 *.dex
 
+# custom
+raspberry/
+
 # Java class files
 *.class
 
