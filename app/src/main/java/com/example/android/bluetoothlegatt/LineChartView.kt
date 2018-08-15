@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlin.collections.ArrayList
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -48,16 +49,16 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         val view = inflater.inflate(R.layout.line_chart_view, this, true)
 
         dateText = view.findViewById(R.id.dateText)
-        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         dateText.text = dateFormat.format(Date())
 
         mChart = view.findViewById<LineChart>(R.id.lineChart)
 
         // no description text
-        mChart.getDescription().setEnabled(false)
+        mChart.description.isEnabled = false
 
         // enable touch gestures
-        mChart.setTouchEnabled(true)
+        mChart.setTouchEnabled(false)
 
         mChart.setDragDecelerationFrictionCoef(0.9f)
 
@@ -104,7 +105,7 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         leftAxis.setTextColor(ColorTemplate.getHoloBlue())
         leftAxis.setDrawGridLines(true)
         leftAxis.setAxisMinimum(0f)
-        leftAxis.setAxisMaximum(170f)
+        leftAxis.setAxisMaximum(120f)
         leftAxis.setYOffset(-9f)
         leftAxis.setTextColor(Color.rgb(255, 192, 56))
 
@@ -119,14 +120,18 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
 //        val sortedHot = rawHotValues.sortedBy { it.timestamp }
 
         val minTimestamp: Long
+        val maxTimestamp: Long
         if (sortedCold.isEmpty() && sortedHot.isEmpty()) {
             return
         } else if (sortedCold.isEmpty()) {
             minTimestamp = sortedHot[0].timestamp
-        } else if (sortedHot.isEmpty()){
+            maxTimestamp = sortedHot.last().timestamp
+        } else if (sortedHot.isEmpty()) {
             minTimestamp = sortedCold[0].timestamp
+            maxTimestamp = sortedCold.last().timestamp
         } else {
             minTimestamp = min(sortedCold[0].timestamp, sortedHot[0].timestamp)
+            maxTimestamp = max(sortedCold.last().timestamp, sortedHot.last().timestamp)
         }
 
         // now in hours
@@ -135,7 +140,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         val sets = ArrayList<LineDataSet>()
         if (sortedCold.isNotEmpty()) {
             val coldValues = sortedCold.map {
-                Entry((it.timestamp - minTimestamp).toFloat(), it.value.toFloat())
+                val t = (it.timestamp - minTimestamp).toFloat()
+                Entry(t, it.value.toFloat())
             }
 
             // create a dataset and give it a type
@@ -145,8 +151,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             set1.color = color1
             set1.valueTextColor = color1
             set1.lineWidth = 2.5f
-            set1.setDrawCircles(false)
-            set1.setDrawValues(false)
+            set1.setDrawCircles(true)
+            set1.setDrawValues(true)
             set1.fillAlpha = 65
             set1.fillColor = color1
             set1.highLightColor = Color.rgb(244, 117, 117)
@@ -157,7 +163,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         if (sortedHot.isNotEmpty()) {
 
             val hotValues = sortedHot.map {
-                Entry((it.timestamp - minTimestamp).toFloat(), it.value.toFloat())
+                val t = (it.timestamp - minTimestamp).toFloat()
+                Entry(t, it.value.toFloat())
             }
 
             // create a dataset and give it a type
@@ -167,8 +174,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             set2.color = color2
             set2.valueTextColor = color2
             set2.lineWidth = 2.5f
-            set2.setDrawCircles(false)
-            set2.setDrawValues(false)
+            set2.setDrawCircles(true)
+            set2.setDrawValues(true)
             set2.fillAlpha = 65
             set2.fillColor = color2
             set2.highLightColor = Color.rgb(244, 227, 227)

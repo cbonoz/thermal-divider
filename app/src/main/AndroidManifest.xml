@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:name=".ThermApplication"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
-        android:icon="@drawable/thermal_divider">
+        android:icon="@drawable/thermal_icon">
 
         <activity android:name=".activities.SplashActivity"
             android:label="@string/app_name">

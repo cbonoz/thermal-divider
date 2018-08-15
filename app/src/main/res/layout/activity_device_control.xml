@@ -23,30 +23,36 @@
             android:src="@drawable/thermal_divider_200"
             android:maxHeight="40dp"
             android:layout_marginTop="24dp"
+            android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <RelativeLayout
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_large">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_gravity="center"
+                android:layout_marginTop="0dp"
                 android:contentDescription="@string/lunchbox"
-                android:src="@drawable/thermocool_luchbox_view" />
+                android:src="@drawable/thermal_view" />
 
             <ImageView
                 android:id="@+id/lunchbox_overlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:contentDescription="@string/overlay"
-                android:src="@drawable/thermocool_luchbox_overlay" />
+                android:src="@drawable/thermal_overlay" />
         </RelativeLayout>
 
         <LinearLayout
@@ -76,16 +82,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_huge"
-            android:layout_marginRight="@dimen/margin_huge"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -112,6 +112,7 @@
                         android:textSize="18sp" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,23 +132,25 @@
                     <TextView
                         android:id="@+id/data_value"
                         android:textStyle="bold"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/inactive"
                         android:textSize="18sp" />
-                </LinearLayout>
-            </LinearLayout>
+
 
             <Button
                 android:id="@+id/activate"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:background="@drawable/rounded"
+                android:layout_marginStart="10dp"
                 android:paddingEnd="18dp"
                 android:paddingStart="18dp"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/activate" />
+
+                </LinearLayout>
 
         </LinearLayout>
 
@@ -155,6 +158,16 @@
             android:id="@+id/lineChartView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="Recommendations"
+            android:id="@+id/infoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 
         <TextView

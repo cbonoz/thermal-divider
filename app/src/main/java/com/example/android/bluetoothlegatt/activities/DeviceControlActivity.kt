@@ -143,7 +143,7 @@ class DeviceControlActivity : AppCompatActivity() {
         tempChart = findViewById<LineChartView>(R.id.lineChartView)
         mOverlay = findViewById<ImageView>(R.id.lunchbox_overlay)
         infoText = findViewById(R.id.infoText)
-        infoText.text = "Recommended Actions:\n * Not enough data available."
+        infoText.text = "* Not enough data available."
         mOverlay.imageAlpha = 0
         mActivate.setOnClickListener {
             if (mBluetoothLeService != null) {
@@ -166,6 +166,8 @@ class DeviceControlActivity : AppCompatActivity() {
                             mDataField.setText(R.string.active)
                             mActive = true
                         }
+                    } else {
+                        Toast.makeText(this, "Could not connect to device", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -185,13 +187,13 @@ class DeviceControlActivity : AppCompatActivity() {
                     "Could not find BLE Device ${DeviceDiscoverActivity.THERMAL_DIVIDER_DEVICE_NAME}. Restart scan via the options menu to search again",
                     Toast.LENGTH_SHORT)
                     .show()
-            // Generate fake data.
-            val mUIUpdater = UIUpdater(Runnable{
-                populateFakeData()
-            })
-            mUIUpdater.startUpdates();
-        }
 
+        }
+        // Generate fake data.
+        val mUIUpdater = UIUpdater(Runnable {
+            populateFakeData()
+        })
+        mUIUpdater.startUpdates()
     }
 
     private var coldValue = 50
@@ -199,8 +201,10 @@ class DeviceControlActivity : AppCompatActivity() {
 
     private fun populateFakeData() {
         val now = System.currentTimeMillis()
-        coldValues.add(TempRecord(now, coldValue--))
-        hotValues.add(TempRecord(now, hotValue++))
+        val rand: Int = Math.round(Math.random()).toInt()
+        coldValues.add(TempRecord(now, coldValue - rand))
+        hotValues.add(TempRecord(now, hotValue + rand))
+        mOverlay.imageAlpha = 255 * rand
         tempChart.setData(coldValues, hotValues)
     }
 
