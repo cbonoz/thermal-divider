@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.android.bluetoothlegatt.models.TempRecord
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis
@@ -30,6 +31,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
 
     private lateinit var mChart: LineChart
 
+    private lateinit var dateText: TextView
+
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0) {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
@@ -44,6 +47,9 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         val inflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.line_chart_view, this, true)
 
+        dateText = view.findViewById(R.id.dateText)
+        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        dateText.text = dateFormat.format(Date())
 
         mChart = view.findViewById<LineChart>(R.id.lineChart)
 
@@ -76,19 +82,19 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         val xAxis = mChart.getXAxis()
         xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE)
         xAxis.setTextSize(10f)
-        xAxis.setTextColor(Color.WHITE)
+        xAxis.setTextColor(Color.BLACK)
         xAxis.setDrawAxisLine(false)
         xAxis.setDrawGridLines(true)
         xAxis.setTextColor(Color.rgb(255, 192, 56))
         xAxis.setCenterAxisLabels(true)
-        xAxis.setGranularity(1f) // one hour
         xAxis.valueFormatter = object : IAxisValueFormatter {
 
-            private val mFormat = SimpleDateFormat("dd MMM HH:mm")
+            private val mFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
             override fun getFormattedValue(value: Float, axis: AxisBase): String {
 
-                val millis = TimeUnit.HOURS.toMillis(value.toLong())
+//                val millis = TimeUnit.HOURS.toMillis(value.toLong())
+                val millis = value.toLong()
                 return mFormat.format(Date(millis))
             }
         }
@@ -97,7 +103,6 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
         leftAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         leftAxis.setTextColor(ColorTemplate.getHoloBlue())
         leftAxis.setDrawGridLines(true)
-        leftAxis.setGranularityEnabled(true)
         leftAxis.setAxisMinimum(0f)
         leftAxis.setAxisMaximum(170f)
         leftAxis.setYOffset(-9f)
@@ -139,7 +144,7 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             val color1 = ColorTemplate.PASTEL_COLORS[0]
             set1.color = color1
             set1.valueTextColor = color1
-            set1.lineWidth = 1.5f
+            set1.lineWidth = 2.5f
             set1.setDrawCircles(false)
             set1.setDrawValues(false)
             set1.fillAlpha = 65
@@ -151,14 +156,14 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
 
         if (sortedHot.isNotEmpty()) {
 
-            val hotValues = sortedCold.map {
+            val hotValues = sortedHot.map {
                 Entry((it.timestamp - minTimestamp).toFloat(), it.value.toFloat())
             }
 
             // create a dataset and give it a type
             val set2 = LineDataSet(hotValues, "Hot Values")
             set2.axisDependency = AxisDependency.LEFT
-            val color2 = ColorTemplate.PASTEL_COLORS[1]
+            val color2 = ColorTemplate.PASTEL_COLORS[4]
             set2.color = color2
             set2.valueTextColor = color2
             set2.lineWidth = 2.5f
@@ -178,7 +183,8 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
 
         // set data
         mChart.data = data
+        mChart.invalidate()
+        mChart.refreshDrawableState()
     }
-
 
 }

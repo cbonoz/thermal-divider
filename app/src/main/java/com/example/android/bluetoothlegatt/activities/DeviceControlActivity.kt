@@ -36,10 +36,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.example.android.bluetoothlegatt.BluetoothLeService
-import com.example.android.bluetoothlegatt.LineChartView
-import com.example.android.bluetoothlegatt.R
-import com.example.android.bluetoothlegatt.SampleGattAttributes
+import com.example.android.bluetoothlegatt.*
 import com.example.android.bluetoothlegatt.models.TempRecord
 import timber.log.Timber
 
@@ -64,6 +61,7 @@ class DeviceControlActivity : AppCompatActivity() {
     private lateinit var mHotTemperature: TextView
     private lateinit var mActivate: Button
     private lateinit var mOverlay: ImageView
+    private lateinit var infoText: TextView
 
     private var mDeviceAddress: String? = null
     private var mBluetoothLeService: BluetoothLeService? = null
@@ -144,6 +142,8 @@ class DeviceControlActivity : AppCompatActivity() {
         mActivate = findViewById<Button>(R.id.activate)
         tempChart = findViewById<LineChartView>(R.id.lineChartView)
         mOverlay = findViewById<ImageView>(R.id.lunchbox_overlay)
+        infoText = findViewById(R.id.infoText)
+        infoText.text = "Recommended Actions:\n * Not enough data available."
         mOverlay.imageAlpha = 0
         mActivate.setOnClickListener {
             if (mBluetoothLeService != null) {
@@ -155,7 +155,8 @@ class DeviceControlActivity : AppCompatActivity() {
                         value[0] = 0x11.toByte()
                     }
                     mOnOffCharacteristic!!.value = value
-                    if (mBluetoothLeService!!.writeCharacteristic()) {
+                    // Returns true if successful - update the active state.
+                    if (mBluetoothLeService!!.writeCharacteristic(value)) {
                         if (mActive) {
                             mActivate.setText(R.string.activate)
                             mDataField.setText(R.string.inactive)
@@ -174,8 +175,33 @@ class DeviceControlActivity : AppCompatActivity() {
             actionBar.setTitle(R.string.reconnect)
             actionBar.setDisplayHomeAsUpEnabled(true)
         }
-        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-        bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+
+
+        if (mDeviceAddress != null) {
+            val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+            bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+        } else {
+            Toast.makeText(this,
+                    "Could not find BLE Device ${DeviceDiscoverActivity.THERMAL_DIVIDER_DEVICE_NAME}. Restart scan via the options menu to search again",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            // Generate fake data.
+            val mUIUpdater = UIUpdater(Runnable{
+                populateFakeData()
+            })
+            mUIUpdater.startUpdates();
+        }
+
+    }
+
+    private var coldValue = 50
+    private var hotValue = 60
+
+    private fun populateFakeData() {
+        val now = System.currentTimeMillis()
+        coldValues.add(TempRecord(now, coldValue--))
+        hotValues.add(TempRecord(now, hotValue++))
+        tempChart.setData(coldValues, hotValues)
     }
 
     override fun onResume() {
@@ -198,7 +224,9 @@ class DeviceControlActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(mServiceConnection)
+        if (mDeviceAddress != null) {
+            unbindService(mServiceConnection)
+        }
         mBluetoothLeService = null
     }
 

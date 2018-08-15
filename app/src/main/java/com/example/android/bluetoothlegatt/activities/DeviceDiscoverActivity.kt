@@ -75,6 +75,10 @@ class DeviceDiscoverActivity : AppCompatActivity(), BluetoothAdapter.LeScanCallb
         // BluetoothAdapter through BluetoothManager.
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         mBluetoothAdapter = bluetoothManager.adapter
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "App requires bluetooth adapter on device", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
         // Prompt for permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -159,10 +163,9 @@ class DeviceDiscoverActivity : AppCompatActivity(), BluetoothAdapter.LeScanCallb
         loadingLayout?.visibility = View.INVISIBLE
         mScanning = false
         mBluetoothAdapter.stopLeScan(this)
-        Toast.makeText(this,
-                "Could not find BLE Device $THERMAL_DIVIDER_DEVICE_NAME. Restart scan via the options menu to search again",
-                Toast.LENGTH_SHORT)
-                .show()
+        // TODO: remove
+//        val intent = Intent(applicationContext, DeviceControlActivity::class.java)
+//        startActivity(intent)
     }
 
     companion object {

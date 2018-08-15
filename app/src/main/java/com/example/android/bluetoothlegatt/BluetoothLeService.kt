@@ -18,7 +18,6 @@ package com.example.android.bluetoothlegatt
 
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
@@ -257,14 +256,14 @@ class BluetoothLeService : Service() {
      */
     fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enabled: Boolean) {}
 
-    fun writeCharacteristic(): Boolean {
+    fun writeCharacteristic(value: ByteArray): Boolean {
         if (mBluetoothGatt == null) {
             return false
         }
         val service = mBluetoothGatt!!.getService(UUID_LUNCHBOX_SERVICE) ?: return false
         val charac = service.getCharacteristic(UUID_DEVICE_ON_OFF) ?: return false
-        val value = ByteArray(1)
-        value[0] = (21 and 0xFF).toByte()
+        // val value = ByteArray(1)
+        // value[0] = (21 and 0xFF).toByte()
         charac.value = value
         return mBluetoothGatt!!.writeCharacteristic(charac)
     }
