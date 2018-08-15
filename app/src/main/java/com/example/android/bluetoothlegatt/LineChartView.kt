@@ -151,7 +151,7 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             set1.color = color1
             set1.valueTextColor = color1
             set1.lineWidth = 2.5f
-            set1.setDrawCircles(true)
+            set1.setDrawCircles(false)
             set1.setDrawValues(true)
             set1.fillAlpha = 65
             set1.fillColor = color1
@@ -174,7 +174,7 @@ class LineChartView(context: Context?, attrs: AttributeSet? = null, defStyleAttr
             set2.color = color2
             set2.valueTextColor = color2
             set2.lineWidth = 2.5f
-            set2.setDrawCircles(true)
+            set2.setDrawCircles(false)
             set2.setDrawValues(true)
             set2.fillAlpha = 65
             set2.fillColor = color2

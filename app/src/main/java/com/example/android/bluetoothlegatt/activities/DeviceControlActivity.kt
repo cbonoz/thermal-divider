@@ -125,6 +125,8 @@ class DeviceControlActivity : AppCompatActivity() {
 
     private lateinit var tempChart: LineChartView
 
+    private val TESTING: Boolean = false
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
@@ -190,10 +192,12 @@ class DeviceControlActivity : AppCompatActivity() {
 
         }
         // Generate fake data.
-        val mUIUpdater = UIUpdater(Runnable {
-            populateFakeData()
-        })
-        mUIUpdater.startUpdates()
+        if (TESTING) {
+            val mUIUpdater = UIUpdater(Runnable {
+                populateFakeData()
+            })
+            mUIUpdater.startUpdates()
+        }
     }
 
     private var coldValue = 50
