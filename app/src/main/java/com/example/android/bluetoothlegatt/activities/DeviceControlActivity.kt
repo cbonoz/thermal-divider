@@ -172,6 +172,8 @@ class DeviceControlActivity : AppCompatActivity() {
                         Toast.makeText(this, "Could not connect to device", Toast.LENGTH_SHORT).show()
                     }
                 }
+            } else {
+                Toast.makeText(this, "Could not connect to device", Toast.LENGTH_SHORT).show()
             }
         }
 
